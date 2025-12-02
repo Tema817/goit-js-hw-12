@@ -54,7 +54,10 @@ formEl.addEventListener('submit', async e => {
     }
 
     createGallery(hits);
-    showLoadMoreButton();
+
+    if (totalHits > 15) {
+      showLoadMoreButton();
+    }
 
     iziToast.success({
       title: 'Success',
@@ -78,6 +81,8 @@ formEl.addEventListener('submit', async e => {
 
 loadMoreBtn.addEventListener('click', async () => {
   page += 1;
+
+  hideLoadMoreButton();
   showLoader();
 
   try {
@@ -92,8 +97,9 @@ loadMoreBtn.addEventListener('click', async () => {
       behavior: 'smooth',
     });
 
-    if (page * 15 >= totalHits) {
-      hideLoadMoreButton();
+    if (page * 15 < totalHits) {
+      showLoadMoreButton();
+    } else {
       iziToast.info({
         title: 'End',
         message: "We're sorry, but you've reached the end of search results.",
@@ -108,6 +114,7 @@ loadMoreBtn.addEventListener('click', async () => {
       position: 'topRight',
       timeout: 3000,
     });
+    showLoadMoreButton();
   } finally {
     hideLoader();
   }
